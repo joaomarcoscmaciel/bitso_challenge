@@ -1,0 +1,33 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Airflow logs and SQLite DB
+airflow/logs/
+airflow/airflow.db
+
+# Configuration files
+# etl/config/config.yml
+# etl/scripts/last_update.json
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# Docker
+*.log
+*.env
+
+#venv
+bitso_env/
+
+# VSCode
+.vscode/
+
+# System files
+.DS_Store
+
+latest
+
+# sample to big, needs to be added manually
+deposit_sample_data.csv

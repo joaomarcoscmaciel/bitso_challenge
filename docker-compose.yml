@@ -1,0 +1,127 @@
+version: "3.8"
+services:
+  etl:
+    build: ./etl
+    container_name: etl_service
+    depends_on:
+      - db
+    volumes:
+      - ./etl/config:/app/config
+    environment:
+      - DATABASE_HOST=db
+      - DATABASE_PORT=5432
+      - DATABASE_USER=admin
+      - DATABASE_PASSWORD=password
+      - DATABASE_NAME=etl_db
+    networks:
+      - etl_net
+
+  db:
+    build: ./db
+    container_name: etl_db
+    restart: always
+    environment:
+      POSTGRES_DB: etl_db
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data # Persisting DB data
+      - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    networks:
+      - etl_net
+
+  visualization_service:
+    build: ./visualization
+    container_name: metabase
+    ports:
+      - "3000:3000"
+    environment:
+      - MB_JETTY_PORT=3000
+      - MB_DB_TYPE=postgres
+      - MB_DB_DBNAME=etl_db
+      - MB_DB_PORT=5432
+      - MB_DB_USER=admin
+      - MB_DB_PASS=password
+      - MB_DB_HOST=db
+    depends_on:
+      - db
+    networks:
+      - etl_net
+    volumes:
+      - metabase_data:/metabase-data  # Persisting Metabase data
+      - ./etl/config:/app/config
+
+  airflow-webserver:
+    image: apache/airflow:2.6.1
+    container_name: airflow_webserver
+    command: >
+      bash -c "airflow db init && 
+      airflow webserver"
+    depends_on:
+      - airflow-scheduler
+      - db
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://admin:password@db:5432/etl_db
+      - AIRFLOW__WEBSERVER__SECRET_KEY=mysecretkey
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - AIRFLOW__WEBSERVER__SESSION_LIFETIME=86400  # 1 day in seconds
+      - PYTHONPATH=/opt/airflow:/opt/airflow/etl
+      - TZ=UTC
+      - AIRFLOW__CORE__DEFAULT_TIMEZONE=utc
+      # - AIRFLOW__CORE__FERNET_KEY=yzFAS6HmUY9fqzFlFRhbjr4X0kDYI9YmNYEYVictBsM
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+      - ./etl:/opt/airflow/etl
+      - ./etl/scripts:/opt/airflow/scripts
+      - ./etl/utils:/opt/airflow/utils
+      - ./etl/config:/opt/airflow/config
+      - ./etl/data:/opt/airflow/data
+    networks:
+      - etl_net
+
+  airflow-scheduler:
+    image: apache/airflow:2.6.1
+    container_name: airflow_scheduler
+    command: >
+      bash -c "airflow db init &&
+      airflow users create --username admin --password admin --firstname Admin --lastname User --role Admin --email admin@example.com && 
+      airflow scheduler"
+    restart: always
+    depends_on:
+      - db
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://admin:password@db:5432/etl_db
+      - AIRFLOW__WEBSERVER__SECRET_KEY=mysecretkey
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - AIRFLOW__WEBSERVER__SESSION_LIFETIME=86400  # 1 day in seconds
+      - PYTHONPATH=/opt/airflow:/opt/airflow/etl
+      - TZ=UTC
+      - AIRFLOW__CORE__DEFAULT_TIMEZONE=utc
+      # - AIRFLOW__CORE__FERNET_KEY=yzFAS6HmUY9fqzFlFRhbjr4X0kDYI9YmNYEYVictBsM
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+      - ./etl:/opt/airflow/etl
+      - ./etl/scripts:/opt/airflow/scripts
+      - ./etl/utils:/opt/airflow/utils
+      - ./etl/config:/opt/airflow/config
+      - ./etl/data:/opt/airflow/data
+    networks:
+      - etl_net
+
+networks:
+  etl_net:
+    driver: bridge
+
+volumes:
+  pg_data: # Volume for PostgreSQL data
+  metabase_data: # Volume for Metabase data
+  airflow_logs:
+  airflow_plugins:

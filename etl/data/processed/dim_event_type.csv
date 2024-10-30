@@ -1,0 +1,17 @@
+event_type_name,event_type_id
+login,1
+2falogin,2
+login_api,3
+email_verified,4
+level_change_up,5
+cookies_accepted,6
+level_change_down,7
+api_key_deleted,8
+api_key_created,9
+2fa_wrong,10
+2faoff,11
+2faon,12
+account_suspended,13
+country_updated,14
+account_terminated,15
+document_verified,16

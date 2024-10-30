@@ -1,0 +1,8 @@
+FROM postgres:13
+
+ENV POSTGRES_DB=etl_db
+ENV POSTGRES_USER=admin
+ENV POSTGRES_PASSWORD=password
+
+# Expose port
+EXPOSE 5432

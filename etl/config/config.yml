@@ -1,0 +1,14 @@
+input_data_path: "data/raw/"
+output_data_path: "data/processed/"
+log_file: "data/logs/etl_pipeline.log"
+database:
+  host: db
+  port: 5432
+  user: admin
+  password: password
+  name: etl_db
+# upadate the credentials below with the user you create on Metabase
+metabase:
+  url: http://localhost:3000
+  username: admin@admin.com  
+  password: wnh4YAV8nwa_bxn*djz  
