@@ -122,7 +122,7 @@ def transform_dim_currency(fact_withdrawals_df, fact_deposits_df):
         raise
 
 
-def transform_dim_interface(fact_withdrawals_df, fact_deposits_df):
+def transform_dim_interface(fact_withdrawals_df):
     """Creates the Dim_Interface table from Fact_Withdrawals and Fact_Deposits."""
     try:
         logging.info("Starting transformation for Dim_Interface...")

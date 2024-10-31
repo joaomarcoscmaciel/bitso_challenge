@@ -20,21 +20,23 @@ from consistency_checks import (
 from utils.logging import setup_logging
 
 # Load configuration
-with open('config/config.yml') as file:
+with open('../config/config.yml') as file:
     config = yaml.safe_load(file)
 
 # Setup logging
-setup_logging(config['log_file'])
+setup_logging('../' + config['log_file'])
+
+output_data_path = '../' + config['output_data_path']
 
 # Load the generated fact and dimension tables
-fact_withdrawals = pd.read_csv(config['output_data_path'] + 'fact_withdrawals.csv')
-fact_deposits = pd.read_csv(config['output_data_path'] + 'fact_deposits.csv')
-fact_events = pd.read_csv(config['output_data_path'] + 'fact_events.csv')
-dim_user = pd.read_csv(config['output_data_path'] + 'dim_user.csv')
-dim_currency = pd.read_csv(config['output_data_path'] + 'dim_currency.csv')
-dim_interface = pd.read_csv(config['output_data_path'] + 'dim_interface.csv')
-dim_time = pd.read_csv(config['output_data_path'] + 'dim_time.csv')
-dim_event_type = pd.read_csv(config['output_data_path'] + 'dim_event_type.csv')
+fact_withdrawals = pd.read_csv(output_data_path + 'fact_withdrawals.csv')
+fact_deposits = pd.read_csv(output_data_path + 'fact_deposits.csv')
+fact_events = pd.read_csv(output_data_path + 'fact_events.csv')
+dim_user = pd.read_csv(output_data_path + 'dim_user.csv')
+dim_currency = pd.read_csv(output_data_path + 'dim_currency.csv')
+dim_interface = pd.read_csv(output_data_path + 'dim_interface.csv')
+dim_time = pd.read_csv(output_data_path + 'dim_time.csv')
+dim_event_type = pd.read_csv(output_data_path + 'dim_event_type.csv')
 
 def run_pipeline_tests():
     """Runs the full suite of pipeline validation checks."""

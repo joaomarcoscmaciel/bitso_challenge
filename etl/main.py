@@ -44,7 +44,7 @@ def run_etl_pipeline():
         fact_events_table = transform_fact_events(events_df)
         dim_user_table = transform_user_data(user_id_df, user_level_df)
         dim_currency_table = transform_dim_currency(fact_withdrawals_table, fact_deposits_table)
-        dim_interface_table = transform_dim_interface(fact_withdrawals_table, fact_deposits_table)
+        dim_interface_table = transform_dim_interface(fact_withdrawals_table)
 
         # Get date range for Dim_Time
         min_date = min(fact_withdrawals_table['event_timestamp'].min(), fact_events_table['event_timestamp'].min())

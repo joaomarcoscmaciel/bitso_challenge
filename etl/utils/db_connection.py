@@ -23,8 +23,7 @@ def get_postgres_engine(config_path='config/config.yml'):
         db_name = db_config.get('name', 'etl_db')
 
         # Create the PostgreSQL connection URL
-        # db_url = f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
-        db_url = f"postgresql://admin:password@db:5432/etl_db"
+        db_url = f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
 
         # Create and return the SQLAlchemy engine
         return create_engine(db_url)

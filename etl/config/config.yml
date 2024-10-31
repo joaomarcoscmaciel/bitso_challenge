@@ -11,4 +11,4 @@ database:
 metabase:
   url: http://localhost:3000
   username: admin@admin.com  
-  password: wnh4YAV8nwa_bxn*djz  
+  password: etl_challenge1

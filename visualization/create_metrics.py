@@ -21,6 +21,7 @@ def metabase_login():
         return response.json().get('id')
     else:
         raise Exception("Failed to log in to Metabase")
+        
 
 # Create metric in Metabase
 def create_metric(query_name, query_sql, database_id):
@@ -39,8 +40,8 @@ def create_metric(query_name, query_sql, database_id):
             "database": database_id
         },
         "display": query_name[1],
-        "visualization_settings": {},  # Add this to avoid the error
-        "description": f"Metric for {query_name[0]}"  # Optional: add a description
+        "visualization_settings": {},
+        "description": f"Metric for {query_name[0]}" 
     }
     response = requests.post(create_card_url, json=payload, headers=headers)
     if response.status_code == 200:
